@@ -27,7 +27,7 @@ exports.getPedidos = (req, res, next) => {
               Request: {
                 tipo: 'GET',
                 descricao: 'Retorna os detalhes de um pedido específico',
-                url: 'https://localhost:3000/produtos/' + ped.id_pedidos
+                url: process.env.URL_API + 'produtos/' + ped.id_pedidos
               }
             }
           })
@@ -67,7 +67,7 @@ exports.postPedidos = (req, res, next) => {
                 Request: {
                   tipo: 'GET',
                   descricao: 'REtorna todos os pedidos',
-                  url: 'https://localhost:3000/pedidos'
+                  url: process.env.URL_API + 'pedidos'
                 }
               }
             }
@@ -99,7 +99,7 @@ exports.getUmPedido = (req, res, next) => {
             Request: {
               tipo: 'GET',
               descricao: 'Retorna um pedido específico',
-              url: 'https://localhost:3000/pedido'
+              url: process.env.URL_API + 'pedidos'
             }
           }
         }
@@ -123,7 +123,7 @@ exports.deletePedido = (req, res, next) => {
           request: {
             tipo: 'POST',
             descricao: 'Insere um produto',
-            url: 'https://localhost:3000/pedidos',
+            url: process.env.URL_API + 'pedidos',
             body: {
               id_produtos: 'Number',
               quantidade: 'Number'

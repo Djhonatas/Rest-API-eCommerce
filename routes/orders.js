@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const PedidosController = require('../controller/pedidos-crontroller')
+const PedidosController = require('../controller/pedidos-controller')
 
 router.get('/', PedidosController.getPedidos)//RETORNA TODOS OS PEDIDOS
 router.post('/', PedidosController.postPedidos)//INSERE UM PEDIDO

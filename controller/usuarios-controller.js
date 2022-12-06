@@ -1,69 +1,66 @@
-const mysql = require('../mysql').pool
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const mysql = require('../mysql');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-exports.cadastrarUsuario = (req, res, next) => {
-  mysql.getConnection((error, conn) => {
-    if (error) { return res.status(500).send({ error: error }) }
-    conn.query('SELECT * FROM usuarios WHERE email = ?', [req.body.email], (error, results) => {
-      if (error) { return res.status(500).send({ error: error }) }
-      if (results.length > 0) {
-        res.status(409).send({ mensagem: 'Usuário já cadastrado' })
-      } else {
-        bcrypt.hash(req.body.senha, 10, (errBcrypt, hash) => {
-          if (errBcrypt) { return res.status(500).send({ error: errBcrypt }) }
-          conn.query(
-            `INSERT INTO usuarios (email, senha) VALUES (?,?)`,
-            [req.body.email, hash],
-            (error, results) => {
-              conn.release()
-              if (error) { return res.status(500).send({ error: error }) }
-              response = {
-                mensagem: 'Usuário criado com sucesso!',
-                usuarioCriado: {
-                  id_usuario: results.insertId,
-                  email: req.body.email,
-                }
-              }
-              return res.status(201).send(response)
-            })
-        })
+exports.createUser = async (req, res, next) => {
+
+  try {
+    var query = `SELECT * FROM users WHERE email = ?`
+    var result = await mysql.execute(query, [req.body.email])
+
+    if (result.length > 0) {
+      return res.status(409).send({ message: 'Usuário já cadastrado' })
+    }
+
+    const hash = await bcrypt.hashSync(req.body.senha, 10)
+
+    query = `INSERT INTO users (email, password) VALUES (?,?)`
+    const results = await mysql.execute(query, [req.body.email, hash])
+
+    const response = {
+      message: 'Usuário criado com sucesso!',
+      userCreate: {
+        insertId: results.insertId,
+        email: req.body.email,
+        hash: hash,
+        password: req.body.password
       }
-    })
-  })
-}
+    }
+    return res.status(201).send(response);
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({ error: error });
+  }
+};
 
-exports.Login = (req, res, next) => {
-  mysql.getConnection((error, conn) => {
-    if (error) { return res.status(500).send({ error: error }) }
-    const query = `SELECT * FROM usuarios WHERE email = ?`
-    conn.query(query, [req.body.email], (error, results, fields) => {
-      conn.release()
-      if (error) { return res.status(500).send({ error: error }) }
-      if (results.length < 1) {
-        return res.status(401).send({ mensagem: 'Falha na autenticação' }) // o status 401 foi utilizado para evitar que usuários maliciosos consiga ter acesso a algum email por excesso te tentativas, já que se utilizasse o 404, a mensagem de resposta seria "email não encontrado", o que daria dicas para esse usuário
-      }
-      bcrypt.compare(req.body.senha, results[0].senha, (err, result) => {
-        if (err) {
-          return res.status(401).send({ mensagem: 'Falha na autenticação' })
-        }
-        if (result) {
-          let token = jwt.sign({
-            id_usuario: results[0].id_usuario, //token guarda as informações do usuário pelo tempo definido no expireIn
-            email: results[0].email
-          },
-            process.env.JWT_KEY,
-            {
-              expiresIn: "1h"
-            })
+exports.Login = async (req, res, next) => {
 
-          return res.status(200).send({
-            mensagem: 'Autenticado com sucesso',
-            token: token
-          })
-        }
-        return res.status(401).send({ mensagem: 'Falha na autenticação' })
-      })
-    })
-  })
-}
+  try {
+    const query = `SELECT * FROM users WHERE email = ?`;
+    var results = await mysql.execute(query, [req.body.email]);
+
+    if (results.length < 1) {
+      return res.status(401).send({ message: 'Falha na autenticação' })
+    }
+
+    if (await bcrypt.compareSync(req.body.senha, results[0].password)) {
+      const token = jwt.sign({
+        userId: results[0].userId,
+        email: results[0].email
+      },
+        process.env.JWT_KEY,
+        {
+          expiresIn: "1h"
+        });
+      return res.status(200).send({
+        message: 'Autenticado com sucesso',
+        token: token
+      });
+    }
+    return res.status(401).send({ message: 'Falha na autenticação' })
+
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({ message: 'Falha na autenticação' });
+  }
+};

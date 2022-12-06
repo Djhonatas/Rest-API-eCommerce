@@ -3,9 +3,9 @@ const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 
-const rotaProdutos = require('./routes/produtos')
-const rotaPedidos = require('./routes/pedidos')
-const rotaUsuarios = require('./routes/usuarios')
+const routeProducts = require('./routes/products')
+const routeOrders = require('./routes/orders')
+const routeUsers = require('./routes/users')
 
 app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
@@ -27,9 +27,9 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/produtos', rotaProdutos)
-app.use('/pedidos', rotaPedidos)
-app.use('/usuarios', rotaUsuarios)
+app.use('/products', routeProducts)
+app.use('/orders', routeOrders)
+app.use('/users', routeUsers)
 
 //quando não encontra rota, entra aqui
 app.use((req, res, next) => {
@@ -42,7 +42,7 @@ app.use((error, req, res, next) => {
   res.status(error.status || 500)
   return res.send({
     erro: {
-      mensagem: error.message
+      message: error.message
     }
   })
 })

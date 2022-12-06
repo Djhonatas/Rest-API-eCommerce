@@ -3,7 +3,8 @@ const router = express.Router()
 const multer = require('multer')
 const login = require('../middleware/login')
 
-const ProdutosController = require('../controller/produtos-controller')
+
+const ProductsController = require('../controller/produtos-controller')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -33,26 +34,24 @@ const upload = multer({
 
 router.get(
   '/',
-  ProdutosController.getProdutos)//RETORNA TODOS OS PRODUTOS
+  ProductsController.getProducts)//RETORNA TODOS OS PRODUTOS
 
 router.post(
   '/',
   login.obrigatorio,
   upload.single('produtoImagem'),
-  ProdutosController.postProduto)//INSERE UM PRODUTO
+  ProductsController.postProduto
+)//INSERE UM PRODUTO
 
-router.get(
-  '/:id_produto',
-  ProdutosController.getUmProduto)//RETORNA OS DADOS DE UM PRODUTO
+router.get('/:id_produto', ProductsController.getUmProduto)//RETORNA OS DADOS DE UM PRODUTO
+router.patch('/', login.obrigatorio, ProductsController.updateProduto)//ALTERAR UM PRODUTO
+router.delete('/', login.obrigatorio, ProductsController.deleteProduto)//EXCLUI UM PRODUTO
 
-router.patch(
-  '/',
+router.post(
+  '/:id_produto/imagem',
   login.obrigatorio,
-  ProdutosController.updateProduto)//ALTERAR UM PRODUTO
-
-router.delete(
-  '/',
-  login.obrigatorio,
-  ProdutosController.deleteProduto)//EXCLUI UM PRODUTO
+  upload.single('produtoImagem'),
+  ProductsController.postImagem
+)
 
 module.exports = router

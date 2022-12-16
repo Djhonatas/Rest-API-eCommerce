@@ -38,5 +38,6 @@ router.get('/:productId', ProductsController.getProductDetail)//RETORNA OS DADOS
 router.patch('/:productId', login.required, ProductsController.updateProduct)//ALTERAR UM PRODUTO
 router.delete('/:productId', login.required, ProductsController.deleteProduct)//EXCLUI UM PRODUTO
 router.post('/:productId/image', login.required, upload.single('imageProduct'), ProductsController.postImage)
+router.get('/:productId/images', ProductsController.getImages)
 
 module.exports = router

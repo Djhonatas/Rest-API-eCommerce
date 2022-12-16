@@ -150,18 +150,20 @@ exports.deleteProduct = async (req, res, next) => {
 }
 
 
-exports.postImage = (req, res, next) => {
+exports.postImage = async (req, res, next) => {
   try {
     const query = 'INSERT INTO productImages (productId,  path) VALUES (?,?)'
-    const result = mysql.execute(query, [
+    const result = await mysql.execute(query, [
       req.params.productId,
       req.file.path
     ])
 
+    console.log(result)
+
     const response = {
       message: 'Imagem inserida com sucesso',
       createdImage: {
-        productId: req.params.productId,
+        productId: parseInt(req.params.productId),
         imageId: result.productId,
         imageProduct: req.file.path,
         // Request: {
@@ -173,6 +175,28 @@ exports.postImage = (req, res, next) => {
     }
     return res.status(201).send(response)
   } catch (error) {
+    //console.log(error)
+    return res.status(500).send({ error: error })
+  }
+}
+
+exports.getImages = async (req, res, next) => {
+  try {
+    const query = 'SELECT * FROM productImages WHERE productId = ?'
+    const result = await mysql.execute(query, [req.params.productId])
+    const response = {
+      quantity: result.length,
+      images: result.map(img => {
+        return {
+          productId: parseInt(req.params.productId),
+          imageId: img.productId,
+          path: process.env.URL_API + img.path
+        }
+      })
+    }
+    return res.status(200).send(response)
+  } catch (error) {
+    console.log(error)
     return res.status(500).send({ error: error })
   }
 }

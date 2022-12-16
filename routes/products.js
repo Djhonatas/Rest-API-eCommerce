@@ -4,7 +4,7 @@ const multer = require('multer')
 const login = require('../middleware/login')
 
 
-const ProductsController = require('../controller/produtos-controller')
+const ProductsController = require('../controller/products-controller')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -32,26 +32,11 @@ const upload = multer({
   fileFilter: fileFilter
 })
 
-router.get(
-  '/',
-  ProductsController.getProducts)//RETORNA TODOS OS PRODUTOS
-
-router.post(
-  '/',
-  login.obrigatorio,
-  upload.single('produtoImagem'),
-  ProductsController.postProduto
-)//INSERE UM PRODUTO
-
-router.get('/:id_produto', ProductsController.getUmProduto)//RETORNA OS DADOS DE UM PRODUTO
-router.patch('/', login.obrigatorio, ProductsController.updateProduto)//ALTERAR UM PRODUTO
-router.delete('/', login.obrigatorio, ProductsController.deleteProduto)//EXCLUI UM PRODUTO
-
-router.post(
-  '/:id_produto/imagem',
-  login.obrigatorio,
-  upload.single('produtoImagem'),
-  ProductsController.postImagem
-)
+router.get('/', ProductsController.getProducts)//RETORNA TODOS OS PRODUTOS
+router.post('/', login.required, upload.single('produtoImagem'), ProductsController.postProduct)//INSERE UM PRODUTO
+router.get('/:productId', ProductsController.getProductDetail)//RETORNA OS DADOS DE UM PRODUTO
+router.patch('/:productId', login.required, ProductsController.updateProduct)//ALTERAR UM PRODUTO
+router.delete('/:productId', login.required, ProductsController.deleteProduct)//EXCLUI UM PRODUTO
+router.post('/:productId/image', login.required, upload.single('imageProduct'), ProductsController.postImage)
 
 module.exports = router

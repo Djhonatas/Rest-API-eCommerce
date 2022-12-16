@@ -1,5 +1,5 @@
 
-
+/*
 CREATE TABLE IF NOT EXISTS products(
   productId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(45),
@@ -28,4 +28,4 @@ CREATE TABLE IF NOT EXISTS productImages(
   FOREIGN KEY (productId) REFERENCES products(productId)
 )
 
-
+/*

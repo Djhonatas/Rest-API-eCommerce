@@ -6,6 +6,8 @@ const bodyParser = require('body-parser')
 const routeProducts = require('./routes/products')
 const routeOrders = require('./routes/orders')
 const routeUsers = require('./routes/users')
+//const imageRoute = require('./routes/images')
+
 
 app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
@@ -13,9 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }))//apenas dados simples
 app.use(bodyParser.json())//json de entrada no body
 
 app.use((req, res, next) => {
-  res.header(
-    'Access-Control-Allow-Origin', '*')
-
+  res.header('Access-Control-Allow-Origin', '*')
   res.header(
     'Access-Control-Allow-Header',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
@@ -30,6 +30,7 @@ app.use((req, res, next) => {
 app.use('/products', routeProducts)
 app.use('/orders', routeOrders)
 app.use('/users', routeUsers)
+//app.use('/images', routeImages);
 
 //quando não encontra rota, entra aqui
 app.use((req, res, next) => {

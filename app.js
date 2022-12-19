@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const routeProducts = require('./routes/products')
 const routeOrders = require('./routes/orders')
 const routeUsers = require('./routes/users')
-//const imageRoute = require('./routes/images')
+const routeImages = require('./routes/images')
 
 
 app.use(morgan('dev'))
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 app.use('/products', routeProducts)
 app.use('/orders', routeOrders)
 app.use('/users', routeUsers)
-//app.use('/images', routeImages);
+app.use('/images', routeImages);
 
 //quando não encontra rota, entra aqui
 app.use((req, res, next) => {

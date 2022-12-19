@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const PedidosController = require('../controller/orders-controller')
 
-router.get('/', PedidosController.getPedidos)//RETORNA TODOS OS PEDIDOS
-router.post('/', PedidosController.postPedidos)//INSERE UM PEDIDO
-router.get('/:id_pedido', PedidosController.getUmPedido)//RETORNA OS DADOS DE UM pedido 
-router.delete('/', PedidosController.deletePedido)//EXCLUI UM PEDIDO
+const OrderController = require('../controller/orders-controller')
+
+router.get('/', OrderController.getOrders)//RETORNA TODOS OS PEDIDOS
+router.post('/', OrderController.postOrders)//INSERE UM PEDIDO
+router.get('/:orderId', OrderController.getOrderDetail)//RETORNA OS DADOS DE UM pedido 
+router.delete('/:orderId', OrderController.deleteOrder)//EXCLUI UM PEDIDO
 
 module.exports = router

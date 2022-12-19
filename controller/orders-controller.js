@@ -1,31 +1,32 @@
 const mysql = require('../mysql')
 
-//CONTROLLER QUE RETORNA TODOS OS PRODUTOS
-exports.getPedidos = async (req, res, next) => {
+//=======================ROTA PARA VISUALIZAR TODOS OS PEDIDOS=================================//
+
+exports.getOrders = async (req, res, next) => {
   try {
-    const query = `SELECT pedidos.id_pedidos,
-                          pedidos.quantidade,
-                          produtos.id_produtos,
-                          produtos.nome, 
-                          produtos.preco
-                     FROM pedidos
-               INNER JOIN produtos
-                       ON produtos.id_produtos = pedidos.id_produtos`
+    const query = `SELECT orders.orderId,
+                          orders.quantity,
+                          products.productId,
+                          products.name, 
+                          products.price
+                     FROM orders
+               INNER JOIN products
+                       ON products.productId = orders.productId`
     const result = await mysql.execute(query)
     const response = {
-      pedidos: result.map(ped => {
+      orders: result.map(ped => {
         return {
-          id_pedido: ped.id_pedidos,
-          quantidade: ped.quantidade,
-          produto: {
-            id_produto: ped.id_produtos,
-            nome: ped.nome,
-            preco: ped.preco
+          orderId: ped.id_orders,
+          quantity: ped.quantity,
+          product: {
+            productId: ped.productId,
+            name: ped.name,
+            price: ped.price
           },
           Request: {
-            tipo: 'GET',
-            descricao: 'Retorna os detalhes de um pedido específico',
-            url: process.env.URL_API + 'pedidos/' + ped.id_pedidos
+            type: 'GET',
+            description: 'Retorna os detalhes de um pedido específico',
+            url: process.env.URL_API + 'orders/' + ped.id_orders
           }
         }
       })
@@ -36,29 +37,30 @@ exports.getPedidos = async (req, res, next) => {
   }
 }
 
-//CONTROLLER PARA INSERIR PRODUTOS NA TABELA
-exports.postPedidos = async (req, res, next) => {
-  try {
-    const queryProdutos = 'SELECT * FROM produtos WHERE id_produtos = ?'
-    const resultProdutos = await mysql.execute(queryProdutos, [req.body.id_produtos])
+//================================= ROTA PARA INSERIR PEDIDOS ================================================//
 
-    if (resultProdutos.length == 0) {
-      return res.status(404).send({ message: "Produto não encontrado" })
+exports.postOrders = async (req, res, next) => {
+  try {
+    const queryproducts = 'SELECT * FROM products WHERE productId = ?'
+    const resultproducts = await mysql.execute(queryproducts, [req.body.productId])
+
+    if (resultproducts.length == 0) {
+      return res.status(404).send({ message: "product não encontrado" })
     }
 
-    const queryPedidos = 'INSERT INTO pedidos (id_produtos, quantidade) VALUES (?,?)'
-    const resultPedidos = await mysql.execute(queryPedidos, [req.body.id_produtos, req.body.quantidade])
+    const queryorders = 'INSERT INTO orders (productId, quantity) VALUES (?,?)'
+    const resultorders = await mysql.execute(queryorders, [req.body.productId, req.body.quantity])
 
     const response = {
       message: 'Pedido inserido com sucesso',
-      pedidoCriado: {
-        id_pedido: resultPedidos.id_pedido,
-        id_produto: req.body.id_produto,
-        quantidade: req.body.quantidade,
+      createdOrder: {
+        orderId: resultorders.orderId,
+        productId: req.body.productId,
+        quantity: req.body.quantity,
         Request: {
-          tipo: 'GET',
-          descricao: 'Retorna todos os pedidos',
-          url: process.env.URL_API + 'pedidos'
+          type: 'GET',
+          description: 'Retorna todos os orders',
+          url: process.env.URL_API + 'orders'
         }
       }
     }
@@ -68,49 +70,57 @@ exports.postPedidos = async (req, res, next) => {
   }
 }
 
-exports.getUmPedido = async (req, res, next) => {
+
+//================================= ROTA PARA RETORNAR PEDIDO ESPECÍFICO ================================================//
+
+exports.getOrderDetail = async (req, res, next) => {
   try {
-    const query = 'SELECT * FROM pedidos WHERE id_pedidos = ?'
-    const result = await mysql.execute(query, [req.params.id_pedido])
+    const query = 'SELECT * FROM orders WHERE orderId = ?'
+    const result = await mysql.execute(query, [req.params.orderId])
 
     if (result.length == 0) {
       return res.status(404).send({
-        message: "Não foi encontrado pedido com este ID"
+        message: "Não foi encontrado order com este ID"
       })
     }
-
+    console.log(result)
     const response = {
-      pedido: {
-        id_pedido: result[0].id_pedido,
-        id_produto: result[0].id_produtos,
-        quantidade: result[0].quantidade,
+      order: {
+        orderId: result[0].orderId,
+        productId: result[0].productId,
+        quantity: result[0].quantity,
         Request: {
-          tipo: 'GET',
-          descricao: 'Retorna um pedido específico',
-          url: process.env.URL_API + 'pedidos'
+          type: 'GET',
+          description: 'Retorna um order específico',
+          url: process.env.URL_API + 'orders'
         }
       }
     }
     return res.status(200).send(response)
   } catch (error) {
+    console.log(error)
     return res.status(500).send({ error: error })
   }
 }
 
-exports.deletePedido = async (req, res, next) => {
+
+
+//================================= ROTA PARA DELETAR PEDIDO ESPECÍFICO ================================================//
+
+exports.deleteOrder = async (req, res, next) => {
   try {
-    const query = `DELETE FROM pedidos WHERE id_pedidos = ?`
-    await mysql.execute(query, [req.body.id_pedido])
+    const query = `DELETE FROM orders WHERE orderId = ?`
+    await mysql.execute(query, [req.params.orderId])
 
     const response = {
       message: 'Peiddo removido com sucesso',
       request: {
-        tipo: 'POST',
-        descricao: 'Insere um produto',
-        url: process.env.URL_API + 'pedidos',
+        type: 'POST',
+        description: 'Insere um product',
+        url: process.env.URL_API + 'orders',
         body: {
-          id_produtos: 'Number',
-          quantidade: 'Number'
+          productId: 'Number',
+          quantity: 'Number'
         }
       }
     }

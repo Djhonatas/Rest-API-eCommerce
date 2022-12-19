@@ -1,8 +1,8 @@
-/*const mysql = require('mysql2')
+const mysql = require('../mysql')
 
 exports.deleteImage = async (req, res, next) => {
   try {
-    const query = `DELETE FROM productImagens WHERE imageId = ?`
+    const query = `DELETE FROM productImages WHERE imageId = ?`
     await mysql.execute(query, [req.params.imageId])
 
     const response = {
@@ -12,14 +12,15 @@ exports.deleteImage = async (req, res, next) => {
         description: 'Insere um produto',
         url: process.env.URL_API + 'products/' + req.body.productId + '/image',
         body: {
-          product: 'Number',
+          productId: 'Number',
           path: 'File'
         }
       }
     }
-    return res.status(201).send(response)
+    return res.status(202).send(response)
 
   } catch (error) {
+    console.log(error)
     return res.status(500).send({ error: error })
   }
-}*/
+}

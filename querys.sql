@@ -28,4 +28,20 @@ CREATE TABLE IF NOT EXISTS productImages(
   FOREIGN KEY (productId) REFERENCES products(productId)
 )
 
-/*
+CREATE TABLE IF NOT EXISTS categories(
+  categoryId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100)
+)
+
+
+*/
+
+drop table productImages
+select * from products
+
+
+ALTER TABLE products ADD categoryId INT NULL
+
+INSERT INTO categories (name) VALUES ('Bordado')
+
+select * from categories

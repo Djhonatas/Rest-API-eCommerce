@@ -55,6 +55,7 @@ exports.postProduct = async (req, res, next) => {
     }
     return res.status(201).send(response)
   } catch (error) {
+    console.log(error)
     return res.status(500).send({ error: error })
   }
 }
@@ -164,13 +165,13 @@ exports.postImage = async (req, res, next) => {
       message: 'Imagem inserida com sucesso',
       createdImage: {
         productId: parseInt(req.params.productId),
-        imageId: result.productId,
+        imageId: result.insertId,
         imageProduct: req.file.path,
-        // Request: {
-        //   type: 'GET',
-        //   description: 'Retorna todos os produtos',
-        //   url: process.env.URL_API + 'products'
-        // }
+        Request: {
+          type: 'GET',
+          description: 'Retorna todas as imagens',
+          url: process.env.URL_API + 'products/' + req.params.productId + '/images'
+        }
       }
     }
     return res.status(201).send(response)
@@ -189,7 +190,7 @@ exports.getImages = async (req, res, next) => {
       images: result.map(img => {
         return {
           productId: parseInt(req.params.productId),
-          imageId: img.productId,
+          imageId: img.imageId,
           path: process.env.URL_API + img.path
         }
       })

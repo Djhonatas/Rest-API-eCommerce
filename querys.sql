@@ -44,4 +44,9 @@ ALTER TABLE products ADD categoryId INT NULL
 
 INSERT INTO categories (name) VALUES ('Bordado')
 
+update products set categoryId = 1
+
+use ecommerce 
 select * from categories
+
+ALTER TABLE products ADD CONSTRAINT fk_product_category FOREIGN KEY (categoryId) REFERENCES categories(categoryId)

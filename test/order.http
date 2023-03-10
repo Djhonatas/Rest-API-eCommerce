@@ -1,11 +1,11 @@
 
 # Get orders
-GET http://localhost:3000/orders
+GET http://localhost:8080/orders
 Content-Type: application/json
 ###
 
 # Post order
-POST http://localhost:3000/orders
+POST http://localhost:8080/orders
 Content-Type: application/json
 
 {
@@ -15,12 +15,12 @@ Content-Type: application/json
 ###
 
 # Get order detail
-GET http://localhost:3000/orders/1
+GET http://localhost:8080/orders/1
 Content-Type: application/json
 ###
 
 
 # Remove an order
-DELETE http://localhost:3000/orders/2
+DELETE http://localhost:8080/orders/2
 Content-Type: application/json
 ###

@@ -1,3 +1,4 @@
+const cors = require('cors')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
@@ -10,10 +11,12 @@ const routeImages = require('./routes/images')
 const routeCategory = require('./routes/category')
 
 
+
 app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
 app.use(bodyParser.urlencoded({ extended: false }))//apenas dados simples
 app.use(bodyParser.json())//json de entrada no body
+app.use(cors())
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
@@ -33,6 +36,8 @@ app.use('/orders', routeOrders)
 app.use('/users', routeUsers)
 app.use('/images', routeImages);
 app.use('/categories', routeCategory)
+
+
 
 //quando não encontra rota, entra aqui
 app.use((req, res, next) => {

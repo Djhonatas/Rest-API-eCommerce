@@ -40,4 +40,5 @@ router.delete('/:productId', login.required, ProductsController.deleteProduct)//
 router.post('/:productId/image', login.required, upload.single('imageProduct'), ProductsController.postImage)
 router.get('/:productId/images', ProductsController.getImages)
 
+
 module.exports = router

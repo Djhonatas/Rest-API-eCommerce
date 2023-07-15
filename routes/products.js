@@ -33,7 +33,7 @@ const upload = multer({
 })
 
 router.get('/', ProductsController.getProducts)//RETORNA TODOS OS PRODUTOS
-router.post('/', login.required, upload.single('produtoImagem'), ProductsController.postProduct)//INSERE UM PRODUTO
+router.post('/api/products', login.required, upload.single('produtoImagem'), ProductsController.postProduct)//INSERE UM PRODUTO
 router.get('/:productId', ProductsController.getProductDetail)//RETORNA OS DADOS DE UM PRODUTO
 router.patch('/:productId', login.required, ProductsController.updateProduct)//ALTERAR UM PRODUTO
 router.delete('/:productId', login.required, ProductsController.deleteProduct)//EXCLUI UM PRODUTO
